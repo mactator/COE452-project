@@ -1,21 +1,23 @@
-output "users_table" {
+output "users_table_name" {
   value = aws_dynamodb_table.users.name
 }
 
-output "events_table" {
+output "users_table_arn" {
+  value = aws_dynamodb_table.users.arn
+}
+
+output "events_table_name" {
   value = aws_dynamodb_table.events.name
 }
 
-output "rsvps_table" {
+output "events_table_arn" {
+  value = aws_dynamodb_table.events.arn
+}
+
+output "rsvps_table_name" {
   value = aws_dynamodb_table.rsvps.name
 }
 
-output "users_table_name" {
-  description = "Name of the users DynamoDB table"
-  value       = aws_dynamodb_table.users.name
-}
-
-output "users_table_arn" {
-  description = "ARN of the users DynamoDB table"
-  value       = aws_dynamodb_table.users.arn
+output "rsvps_table_arn" {
+  value = aws_dynamodb_table.rsvps.arn
 }

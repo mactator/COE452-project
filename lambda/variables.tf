@@ -17,3 +17,8 @@ variable "rsvps_table_arn" {
   description = "ARN of the RSVPs DynamoDB table"
   type        = string
 }
+
+variable "JWT_SECRET_KEY" {
+  description = "jwt seceret key"
+  type = string
+}

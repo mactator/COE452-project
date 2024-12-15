@@ -39,6 +39,7 @@ resource "aws_lambda_function" "create_user" {
   environment {
     variables = {
       USERS_TABLE = var.users_table_name
+      JWT_SECRET_KEY = var.JWT_SECRET_KEY
     }
   }
 }

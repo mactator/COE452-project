@@ -22,9 +22,11 @@ module "lambda" {
 
   users_table_name = module.dynamodb.users_table_name
   users_table_arn  = module.dynamodb.users_table_arn
-  events_table_arn = module.dynamodb.events_table
-  rsvps_table_arn  = module.dynamodb.rsvps_table
+  events_table_arn = module.dynamodb.events_table_arn
+  rsvps_table_arn  = module.dynamodb.rsvps_table_arn
+  JWT_SECRET_KEY  = var.JWT_SECRET_KEY
 }
+
 
 
 module "api_gateway" {
