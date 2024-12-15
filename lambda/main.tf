@@ -33,12 +33,12 @@ resource "aws_lambda_function" "create_user" {
   handler       = "createUser.handler"
   runtime       = "nodejs18.x"
 
-  filename         = "createUser.zip"
-  source_code_hash = filebase64sha256("createUser.zip")
+  filename         = "${path.module}/createUser.zip"
+  source_code_hash = filebase64sha256("${path.module}/createUser.zip")
 
   environment {
     variables = {
-      USERS_TABLE = aws_dynamodb_table.users.name
+      USERS_TABLE = var.users_table_name
     }
   }
 }
@@ -49,12 +49,12 @@ resource "aws_lambda_function" "get_users" {
   handler       = "getUsers.handler"
   runtime       = "nodejs18.x"
 
-  filename         = "getUsers.zip"
-  source_code_hash = filebase64sha256("getUsers.zip")
+  filename         = "${path.module}/getUsers.zip"
+  source_code_hash = filebase64sha256("${path.module}/getUsers.zip")
 
   environment {
     variables = {
-      USERS_TABLE = aws_dynamodb_table.users.name
+      USERS_TABLE = var.users_table_name
     }
   }
 }
@@ -65,41 +65,39 @@ resource "aws_lambda_function" "delete_user" {
   handler       = "deleteUser.handler"
   runtime       = "nodejs18.x"
 
-  filename         = "deleteUser.zip"
-  source_code_hash = filebase64sha256("deleteUser.zip")
+  filename         = "${path.module}/deleteUser.zip"
+  source_code_hash = filebase64sha256("${path.module}/deleteUser.zip")
 
   environment {
     variables = {
-      USERS_TABLE = aws_dynamodb_table.users.name
+      USERS_TABLE = var.users_table_name
     }
   }
 }
 
+
 # Additional IAM Policy for DynamoDB Access
 resource "aws_iam_policy" "lambda_dynamodb_access" {
-  name = "lambda-dynamodb-access"
+  name        = "lambda-dynamodb-access"
+  description = "IAM policy to allow Lambda to access DynamoDB tables"
 
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
+        Action   = ["dynamodb:*"],
         Effect   = "Allow",
-        Action   = [
-          "dynamodb:PutItem",
-          "dynamodb:GetItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:Scan"
-        ],
         Resource = [
-          aws_dynamodb_table.users.arn,
-          aws_dynamodb_table.events.arn,
-          aws_dynamodb_table.rsvps.arn
+          var.users_table_arn,
+          var.events_table_arn,
+          var.rsvps_table_arn
+
         ]
       }
     ]
   })
 }
+
 
 resource "aws_iam_policy_attachment" "lambda_dynamodb_attach" {
   name       = "attach-lambda-dynamodb-policy"

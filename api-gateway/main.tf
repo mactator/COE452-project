@@ -33,34 +33,27 @@ resource "aws_apigatewayv2_route" "delete_user_route" {
 resource "aws_apigatewayv2_integration" "create_user_integration" {
   api_id           = aws_apigatewayv2_api.http_api.id
   integration_type = "AWS_PROXY"
-  integration_uri  = aws_lambda_function.create_user.invoke_arn
-
+  integration_uri  = var.create_user_lambda_arn
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "get_users_integration" {
   api_id           = aws_apigatewayv2_api.http_api.id
   integration_type = "AWS_PROXY"
-  integration_uri  = aws_lambda_function.get_users.invoke_arn
-
+  integration_uri  = var.get_users_lambda_arn
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "delete_user_integration" {
   api_id           = aws_apigatewayv2_api.http_api.id
   integration_type = "AWS_PROXY"
-  integration_uri  = aws_lambda_function.delete_user.invoke_arn
-
+  integration_uri  = var.delete_user_lambda_arn
   payload_format_version = "2.0"
 }
 
-# Permissions for API Gateway to Invoke Lambdas
+# Permissions
 resource "aws_lambda_permission" "api_gateway_permissions" {
-  for_each = {
-    create_user = aws_lambda_function.create_user.function_name
-    get_users   = aws_lambda_function.get_users.function_name
-    delete_user = aws_lambda_function.delete_user.function_name
-  }
+  for_each = var.lambda_function_names
 
   statement_id  = "AllowApiGatewayInvoke-${each.key}"
   action        = "lambda:InvokeFunction"
