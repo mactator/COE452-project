@@ -60,6 +60,24 @@ resource "aws_lambda_function" "get_users" {
   }
 }
 
+# Lambda Function for Auth Service
+resource "aws_lambda_function" "auth_service" {
+  function_name = "eventat-auth-service"
+  role          = aws_iam_role.lambda_exec.arn
+  handler       = "authService.handler"
+  runtime       = "nodejs18.x"
+
+  filename         = "${path.module}/authService.zip"
+  source_code_hash = filebase64sha256("${path.module}/authService.zip")
+
+  environment {
+    variables = {
+      JWT_SECRET_KEY = var.JWT_SECRET_KEY
+    }
+  }
+}
+
+
 resource "aws_lambda_function" "delete_user" {
   function_name = "eventat-delete-user"
   role          = aws_iam_role.lambda_exec.arn
